@@ -43,3 +43,19 @@ twitterData.on('error', function(error) {
 });
 });
 twitterData.end();
+
+function control_panel (request,response) {
+
+    if (request.method === 'GET' && request.url === '/') {
+       let interface = fs.readFileSync(`${currentPath}/interface/home.html`);
+       response.statusCode = 200;
+       response.setHeader('Content-Type', 'text, html');
+       response.write(interface);
+       response.end();
+    }
+    else {
+        response.write('Invalid path');
+    }
+}
+
+module.exports = control_panel;
