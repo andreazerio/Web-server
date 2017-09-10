@@ -20,18 +20,18 @@ var T = new Twit({
 
 const twitterData = https.request(request_options, function(response) {
     response.on('data', function(dataset) {
-        fs.writeFile(`${currentPath}/handles_name.json`,dataset, function (err) {
+        fs.writeFile(`${currentPath}/data/handles_name.json`,dataset, function (err) {
             if(err) throw err;
         })
         JSON.parse(dataset).handles.forEach(function(screen_name) { 
             T.get('statuses/user_timeline', {screen_name: screen_name, count : 50}, function(err, data, response) {
-                            fs.writeFile(`${currentPath}/data/tweets/${handle}.json`, JSON.stringify(data), function(err) {
+                            fs.writeFile(`${currentPath}/data/tweets/${screen_name}.json`, JSON.stringify(data), function(err) {
                                 if(err) throw err;
                             }); 
                      
                 });
             T.get('users/show',{screen_name: screen_name}, function(err, data, response) {
-                fs.writeFile(`${currentPath}/data/users/${handle}.json`, JSON.stringify(data), function(err) {
+                fs.writeFile(`${currentPath}/data/users/${screen_name}.json`, JSON.stringify(data), function(err) {
                     if(err) throw err;
                 }); 
         })
