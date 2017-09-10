@@ -3,14 +3,14 @@ const http = require('http');
 const https = require('https');
 const currentPath = process.cwd();
 const showHandles = require('./dataPopulate/showHandles.js')
-function control_panel (request,response) {
+const templating = require('./dataPopulate/templating.js');
 
-   // let incomingRequest = `${request.method} ${response.url}`
+function control_panel (request,response) {
 
     if (request.method === 'GET' && request.url === '/') {
        let interface = fs.readFileSync(`${currentPath}/interface/home.html`);
        response.statusCode = 200;
-       response.setHeader('Content-Type', 'text, html');
+       response.setHeader('Content-Type', 'text/html');
        response.write(interface);
        response.end();
     }
@@ -19,7 +19,19 @@ function control_panel (request,response) {
         let template = fs.readFileSync(`${currentPath}/interface/handles.html`,'utf8');
         let list = fs.readFileSync(`${currentPath}/data/handles_name.json`,'utf8');
         let interface = showHandles(template,list);
-        response.setHeader('Content-Type', 'text, html');
+        response.statusCode = 200;
+        response.setHeader('Content-Type', 'text/html');
+        response.write(interface);
+        response.end();
+    }
+
+    else if (request.method === 'GET' && /\/users\//.test(request.url)) {
+        let user = request.url.split('/');
+        let userName = JSON.parse(fs.readFileSync(`${currentPath}/data/users/${user[2]}.json`, 'utf8'));
+        let template = fs.readFileSync(`${currentPath}/interface/users.html`,'utf-8');
+        let interface = templating(template,userName);
+        response.statusCode = 200;
+        response.setHeader('Content-Type', 'text/html')
         response.write(interface);
         response.end();
     }
