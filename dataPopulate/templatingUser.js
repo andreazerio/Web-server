@@ -1,4 +1,4 @@
-function templating (template, data) {
+function templatingUser (template, data) {
     Object.keys(data).forEach(user => {
         let regex = new RegExp(`{{ ${user} }}`)
         template = template.replace(regex,data[user]);
@@ -6,4 +6,4 @@ function templating (template, data) {
      return template;
  }
  
- module.exports = templating;
+ module.exports = templatingUser;

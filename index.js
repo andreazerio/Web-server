@@ -3,7 +3,8 @@ const http = require('http');
 const https = require('https');
 const currentPath = process.cwd();
 const showHandles = require('./dataPopulate/showHandles.js')
-const templating = require('./dataPopulate/templating.js');
+const templatingUser = require('./dataPopulate/templatingUser.js');
+let templatingTweets = require('./dataPopulate/templatingTweets.js');
 
 function control_panel (request,response) {
 
@@ -29,7 +30,18 @@ function control_panel (request,response) {
         let user = request.url.split('/');
         let userName = JSON.parse(fs.readFileSync(`${currentPath}/data/users/${user[2]}.json`, 'utf8'));
         let template = fs.readFileSync(`${currentPath}/interface/users.html`,'utf-8');
-        let interface = templating(template,userName);
+        let interface = templatingUser(template,userName);
+        response.statusCode = 200;
+        response.setHeader('Content-Type', 'text/html')
+        response.write(interface);
+        response.end();
+    }
+
+    else if (request.method === 'GET' && /\/tweets\//.test(request.url)) {
+        let tweet = request.url.split('/');
+        let data = JSON.parse(fs.readFileSync(`${currentPath}/data/tweets/${tweet[2]}.json`, 'utf8'));
+        let template = fs.readFileSync(`${currentPath}/interface/tweets.html`,'utf-8');
+        let interface = templatingTweets(template,data);
         response.statusCode = 200;
         response.setHeader('Content-Type', 'text/html')
         response.write(interface);
